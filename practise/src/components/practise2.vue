@@ -1,16 +1,23 @@
 <template>
   <div>
-    当前时间<br>
+    当前时间:<br>
     <!-- 路由传参 -->
-    {{nowTime}}
+    {{nowTime}}<br>
+    三天后:
+    {{threeDaysAfterDate}}<br>
+    本周一:
+    {{thisMondayDate}}
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 export default {
   data () {
     return {
-      nowTime: ''
+      nowTime: '',
+      threeDaysAfterDate: '',
+      thisMondayDate: '',
     }
   },
   methods: {
@@ -29,21 +36,9 @@ export default {
      * 获取当前时间后进行格式化
      */
     getTime () {
-      var date = new Date();
-      var nowTime = {
-          year: date.getFullYear().toString(),
-          month: (date.getMonth() + 1).toString(),
-          day: date.getDate().toString(),
-          hour: date.getHours().toString(),
-          minute: date.getMinutes().toString(),
-          second: date.getSeconds().toString()
-      };
-      this.nowTime = this.addZero(nowTime.year, 4)+ '/'
-        + this.addZero(nowTime.month,2) + '/'
-        + this.addZero(nowTime.day,2) + ' '
-        + this.addZero(nowTime.hour,2) + ':'
-        + this.addZero(nowTime.minute,2) + ':'
-        + this.addZero(nowTime.second,2);
+      this.nowTime = moment().format('YYYY/MM/DD hh:mm:ss');
+      this.threeDaysAfterDate = moment().add(3, 'days').format('YYYY/MM/DD');
+      this.thisMondayDate = moment().weekday(1).format('YYYY/MM/DD');
       console.log(this.nowTime);
     }
   },
