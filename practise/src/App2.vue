@@ -85,57 +85,73 @@
         :visible.sync="dialogVisible"
         width="75%"
         class="dialog">
-        <el-container>
-            <el-aside width="30%">
-                <ul v-for="item in areas" :key="item.id">
-                    <li>
-                        <div :class="quSelect==item.id?'area_select blue':'area_select'" @click="quSelectHandle(item.id)">
-                            {{item.data}}
+        <el-container direction="vertical">
+            <el-header width="100%">
+                <div id="myChart" class="myChart" :style="{width: '650px', height: '300px'}"></div>
+            </el-header>
+            <el-main class="down_300">
+                <el-container>
+                    <el-aside width="15%">
+                        <ul v-for="item in areas" :key="item.id">
+                            <li>
+                                <div :class="quSelect==item.id?'area_select blue':'area_select'" @click="quSelectHandle(item.id)">
+                                    {{item.data}}
+                                </div>
+                            </li>
+                        </ul>
+                    </el-aside>
+                    <el-main>
+                        <el-row>
+                            <el-col :span="7">
+                                <div class="col_div">
+                                    平均得分<br>
+                                    <span class="big_size_text">{{quDefen}}</span>
+                                </div>
+                            </el-col>
+                            <el-col :span="2">&nbsp;</el-col>
+                            <el-col :span="7">
+                                <div class="col_div">
+                                    排名<br>
+                                    <span v-if="quPaiming&gt;3" class="big_size_text">{{quPaiming}}</span>
+                                    <img v-if="quPaiming==1" src="./img/img1.png" />
+                                    <img v-if="quPaiming==2" src="./img/img2.png" />
+                                    <img v-if="quPaiming==3" src="./img/img3.png" />
+                                </div>
+                            </el-col>
+                            <el-col :span="3">&nbsp;</el-col>
+                            <el-col :span="5">
+                                <el-button @click="closeDialog">返回</el-button>
+                            </el-col>
+                        </el-row>
+                        <div class="div_left">
+                            <div class="title_margin">各指数得分详情:</div>
+                            <el-table
+                                class="table_dialog"
+                                :data="quDataShow"
+                                :default-sort = "{prop: 'id', order: 'ascending'}"
+                                height="300px">
+                                <el-table-column
+                                    prop="zhishu"
+                                    label="指数"
+                                    width="120px">
+                                </el-table-column>
+                                <el-table-column
+                                    prop="defen"
+                                    label="得分"
+                                    width="120px">
+                                </el-table-column>
+                                <el-table-column
+                                    prop="paiming"
+                                    label="排名"
+                                    width="120px">
+                                </el-table-column>
+                            </el-table>
                         </div>
-                    </li>
-                </ul>
-            </el-aside>
-            <el-main>
-                <el-row>
-                    <el-col :span="7">
-                        <div class="col_div">
-                            平均得分<br>
-                            <span class="big_size_text">{{quDefen}}</span>
+                        <div class="div_right">
+                            <div id="myRadar" class="myRadar" :style="{width: '400px', height: '500px'}"></div>
                         </div>
-                    </el-col>
-                    <el-col :span="2">&nbsp;</el-col>
-                    <el-col :span="7">
-                        <div class="col_div">
-                            排名<br>
-                            <span class="big_size_text">{{quPaiming}}</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="3">&nbsp;</el-col>
-                    <el-col :span="5">
-                        <el-button @click="closeDialog">返回</el-button>
-                    </el-col>
-                </el-row>
-                <div class="title_margin">各指数得分详情:</div>
-                <el-table
-                    :data="quDataShow"
-                    :default-sort = "{prop: 'id', order: 'ascending'}"
-                    height="300px">
-                    <el-table-column
-                        prop="zhishu"
-                        label="指数"
-                        width="200px">
-                    </el-table-column>
-                    <el-table-column
-                        prop="defen"
-                        label="得分"
-                        width="200px">
-                    </el-table-column>
-                    <el-table-column
-                        prop="paiming"
-                        label="排名"
-                        width="200px">
-                    </el-table-column>
-                </el-table>
+                    </el-main>
+                </el-container>
             </el-main>
         </el-container>
     </el-dialog>
@@ -144,7 +160,10 @@
 
 <script>
 import tableData from './tabledata/zhishu-defen';
+//在组件引入基本模板
+let echarts = require('echarts')
 export default {
+    name: 'Echarts',
     data () {
         return {
             areas: new Array(),
@@ -283,6 +302,9 @@ export default {
         openDialog (quId) {
             this.dialogVisible = true;
             this.quSelect = quId + 1;
+            this.$nextTick(()=>{
+                this.drawLine();
+            });
             this.changeQu(quId);
         },
         closeDialog () {
@@ -308,6 +330,121 @@ export default {
             console.log(this.scores);
             this.quDefen = this.scores[quId].defen.toString().substring(0,5);
             this.quPaiming = this.quData[this.indexNums.length][quId];
+            this.$nextTick(()=>{
+                this.drowRadar(quId);
+            });
+            
+        },
+        drawLine() {
+            let myChart = echarts.init(document.getElementById('myChart'));
+            let that = this;
+            myChart.on('click', function(params) {
+                that.quSelect = params.dataIndex + 1;
+                that.changeQu(params.dataIndex);
+            })
+            let option = {
+                color: ['#f44'],
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {
+                        type : 'shadow'
+                    }
+                },
+                xAxis : [{
+                    type : 'category',
+                    data : [],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }],
+                yAxis : [{
+                    type : 'value'
+                }],
+                series : [{
+                    name:'平均得分',
+                    type:'bar',
+                    barWidth: '60%',
+                    data:[],
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: 'black',
+                                    fontSize: 16
+                                }
+                            }
+                        }
+                    }
+                }],
+                label:{ 
+                    normal:{ 
+                        show: true,
+                        position: 'inside'
+                    } 
+                },
+            };
+            for (var i = 0; i < this.areas.length; i++) {
+                option.xAxis[0].data.push(this.areas[i].data);
+            }
+            for (var i = 0; i < this.areas.length; i++) {
+                let num = eval(this.quDefen = this.scores[i].defen.toString().substring(0,5));
+                let singleData = {
+                    value: num,
+                    itemStyle: {
+                        color: num<=85?'yellow':num<=90?'green':'blue'
+                    }
+                };
+                option.series[0].data.push(singleData);
+            }
+            myChart.setOption(option);
+        },
+        drowRadar (quId) {
+            let myRadar = echarts.init(document.getElementById('myRadar'));
+            let option = {
+                tooltip: {},
+                radar: {
+                    name: {
+                        textStyle: {
+                            color: 'black'
+                        }
+                    },
+                    indicator: [
+                        { name: '销售（sales）', max: 100},
+                        { name: '管理（Administration）', max: 100},
+                        { name: '信息技术（Information Techology）', max: 100},
+                        { name: '客服（Customer Support）', max: 100},
+                        { name: '研发（Development）', max: 100}
+                    ]
+                },
+                series: [{
+                    type: 'radar',
+                    data: [{
+                        value: [4300, 10000, 28000, 35000, 50000],
+                        name: '数值'
+                    }]
+                }]
+            };
+            let d = this.selectHandle(quId+1,'');
+            let param = new Array();
+            for (var i = 0; i < this.indexNums.length; i++) {
+                param.push(0);
+            }
+            for (var i = 0; i < d.length; i++) {
+                param[d[i].zhishuId] = d[i].data.defen;
+            }
+            option.series[0].data[0].value = param;
+            let v = new Array();
+            for (var i = 0; i < this.indexNums.length; i++) {
+                let r = {
+                    name: this.indexNums[i].data,
+                    max: 100
+                }
+                v.push(r);
+            }
+            option.radar.indicator = v;
+            myRadar.setOption(option);
         }
     }
 }
@@ -335,9 +472,6 @@ export default {
 }
 .search_button{
     margin: 0px 0px 0px 20px;
-}
-.dialog{
-    height: 650px;
 }
 .el-dialog__footer{
     padding: 0px;
@@ -367,6 +501,23 @@ export default {
     margin: 15px 0px 15px 0px;
     font-size: larger;
     font-weight: 700;
+}
+.down_300{
+    position: relative;
+    top: 200px;
+}
+.myChart{
+    position: relative;
+    left: 30%;
+}
+.table_dialog{
+    width: 360px;
+}
+.div_left{
+    float: left;
+}
+.div_right{
+    float: right;
 }
 </style>
 <style scope>
