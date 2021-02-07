@@ -1,33 +1,34 @@
 <template>
   <div class="menu_div">
     <el-row class="row">
-      <el-col :span="4" class="menu_col">
+      <el-col :span="4" class="menu_col" v-if="menuShow">
         <h5 class="title">菜单栏</h5>
         <router-link to="/m1">
           <div class="menu_item">
-            页面1
+            <span class="no_style">页面1</span>
           </div>
         </router-link>
         <router-link to="/m2">
           <div class="menu_item">
-            页面2
+            <span>页面2</span>
           </div>
         </router-link>
         <router-link to="/m3">
           <div class="menu_item">
-            页面3
+            <span>页面3</span>
           </div>
         </router-link>
       </el-col>
-      <el-col :span="20">
+      <el-col :span="span">
         <el-container>
           <el-header>
             <div class="title_top">
+              <el-button @click.native="show">{{buttonText}}</el-button>
               <span class="title_text">{{title}}</span>
               <div class="circle">测</div>
             </div>
           </el-header>
-          <el-main class="main">
+          <el-main :class="menuShow?'main':'main_hole'">
             <div class="view_1">
               <div class="view_2">
                 <router-view name="app3"></router-view>
@@ -44,10 +45,35 @@
 export default {
   data () {
     return {
-      title: '测试系统 - 001'
+      title: '测试系统-001',
+      menuShow: true,
+      span: 20,
+      buttonText: '收起',
     }
   },
   methods: {
+    show () {
+      if (this.menuShow) {
+        this.menuShow  = false;
+        this.span = 24;
+        this.buttonText = '展开';
+      } else {
+        this.menuShow  = true;
+        this.span = 20;
+        this.buttonText = '收起';
+      }
+      
+    },
+    watch:{
+        // 控制滚动条位置
+        '$route':function(to,from){
+          console.log(to,from)
+          if(to.meta.keepAlive){
+            document.body.scrollTop = to.meta.scrollTop;
+            document.documentElement.scrollTop = to.meta.scrollTop;
+          }
+        }
+      }
   },
   created () {
     
@@ -89,7 +115,7 @@ export default {
 .title_text{
   display: inline-block;
   position: relative;
-  left: 50%;
+  left: calc(50% - 70px);
   transform: translateX(-50%);
   font-size:xx-large;
   font-weight: 800;
@@ -118,6 +144,13 @@ export default {
   width: 83.3%;
   padding: 5px;
 }
+.main_hole{
+  position:absolute;
+  top: 5vw;
+  height: 41vw;
+  width: 100%;
+  padding: 5px;
+}
 .view_1{
   width: 100%;
   height: 99.7%;
@@ -128,6 +161,9 @@ export default {
   width: calc(100% - 38px);
   height: calc(100% - 36px);
   padding: 20px;
+}
+.no_style{
+  text-decoration: none;
 }
 </style>
 

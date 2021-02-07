@@ -66,6 +66,10 @@ export default new Router({
         {
           path: '/m1',
           name: 'm1',
+          meta: {
+            keepAlive: true,
+            scrollTop: 400,
+          },
           components: {
             app3: menuPage1
           }
