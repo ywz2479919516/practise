@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="s">
-      <router-view></router-view>
+      <router-view name="app1"></router-view>
     </div>
   </div> 
 </template>

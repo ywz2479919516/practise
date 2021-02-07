@@ -6,6 +6,9 @@ import App3 from '../App3'
 import select from '../select'
 import practise1 from '../components/practise1'
 import practise2 from '../components/practise2'
+import menuPage1 from '../components/menuPage1'
+import menuPage2 from '../components/menuPage2'
+import menuPage3 from '../components/menuPage3'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
@@ -19,32 +22,69 @@ export default new Router({
     {
       path: '/',
       name: 'select',
-      component: select
+      components: {
+        app: select
+      }
     },
     {
       path: '/app1',
       name: 'App1',
-      component: App1
+      components: {
+        app: App1
+      },
+      children: [
+        {
+          path: '/p1',
+          name: 'p1',
+          components: {
+            app1: practise1
+          }
+        },
+        {
+          path: '/p2',
+          name: 'p2',
+          components: {
+            app1: practise2
+          }
+        }
+      ]
     },
     {
       path: '/app2',
       name: 'App2',
-      component: App2
+      components: {
+        app: App2
+      }
     },
     {
       path: '/app3',
       name: 'App3',
-      component: App3
-    },
-    {
-      path: '/p1',
-      name: 'p1',
-      component: practise1
-    },
-    {
-      path: '/p2',
-      name: 'p2',
-      component: practise2
+      components: {
+        app: App3
+      },
+      children: [
+        {
+          path: '/m1',
+          name: 'm1',
+          components: {
+            app3: menuPage1
+          }
+        },
+        {
+          path: '/m2',
+          name: 'm2',
+          components: {
+            app3: menuPage2
+          }
+        },
+        {
+          path: '/m3',
+          name: 'm3',
+          components: {
+            app3: menuPage3
+          }
+        }
+      ]
     }
   ]
 })
