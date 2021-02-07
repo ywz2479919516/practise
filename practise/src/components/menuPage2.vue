@@ -1,13 +1,23 @@
 <template>
-  <div class="body2">
-      <div class="middle">
-          页面2
-      </div>
-  </div> 
+    <div class="body2">
+        <div class="div_middle">
+            <el-button @click="full">全屏</el-button>
+            <el-button @click="fullCancel">退出全屏</el-button>
+        </div>
+    </div> 
 </template>
 
 <script>
+import Utils from '../router/util.js';
 export default {
+    methods: {
+        full () {
+            Utils.$emit('full');
+        },
+        fullCancel () {
+            Utils.$emit('fullCancel');
+        }
+    }
 }
 </script>
 
@@ -15,11 +25,12 @@ export default {
 .body2{
     background-color: green;
     height: 100%;
+    text-align: center;
 }
-.middle{
-    width: 45px;
+.div_middle{
+    background-color: white;
     position: relative;
-    left: calc(50% - 23px);
-    top: calc(50% - 13px);
+    top: 50%;
+    transform: translateY(-50%);
 }
 </style>

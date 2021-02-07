@@ -21,14 +21,14 @@
       </el-col>
       <el-col :span="span">
         <el-container>
-          <el-header>
+          <el-header v-if="titleShow">
             <div class="title_top">
               <el-button @click.native="show">{{buttonText}}</el-button>
               <span class="title_text">{{title}}</span>
               <div class="circle">测</div>
             </div>
           </el-header>
-          <el-main :class="menuShow?'main':'main_hole'">
+          <el-main :class="!titleShow?'main_full':menuShow?'main':'main_hole'">
             <div class="view_1">
               <div class="view_2">
                 <router-view name="app3"></router-view>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import Utils from './router/util.js';
 export default {
   data () {
     return {
@@ -49,7 +50,17 @@ export default {
       menuShow: true,
       span: 20,
       buttonText: '收起',
+      titleShow: true
     }
+  },
+  mounted () {
+    var that = this;
+    Utils.$on('full', function () {
+        that.full();
+    });
+    Utils.$on('fullCancel', function () {
+        that.fullCancel();
+    });
   },
   methods: {
     show () {
@@ -62,18 +73,51 @@ export default {
         this.span = 20;
         this.buttonText = '收起';
       }
-      
     },
-    watch:{
-        // 控制滚动条位置
-        '$route':function(to,from){
-          console.log(to,from)
-          if(to.meta.keepAlive){
-            document.body.scrollTop = to.meta.scrollTop;
-            document.documentElement.scrollTop = to.meta.scrollTop;
-          }
-        }
+    full () {
+      this.menuShow  = false;
+      this.span = 24;
+      this.buttonText = '展开';
+      this.titleShow = false;
+      this.launchFullscreen(document.documentElement);
+    },
+    fullCancel () {
+      this.menuShow  = true;
+      this.span = 20;
+      this.buttonText = '收起';
+      this.titleShow = true;
+      this.exitFullscreen();
+    },
+    launchFullscreen (element) {
+      if(element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    },
+    exitFullscreen () {
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if(document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
       }
+    }
+  },
+  watch:{
+    // 控制滚动条位置
+    '$route':function(to,from){
+      console.log(to,from)
+      if(to.meta.keepAlive){
+        document.body.scrollTop = to.meta.scrollTop;
+        document.documentElement.scrollTop = to.meta.scrollTop;
+      }
+    }
   },
   created () {
     
@@ -148,6 +192,12 @@ export default {
   position:absolute;
   top: 5vw;
   height: 41vw;
+  width: 100%;
+  padding: 5px;
+}
+.main_full{
+  position:absolute;
+  height: 55vw;
   width: 100%;
   padding: 5px;
 }
