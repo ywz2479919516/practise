@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import Utils from './router/util.js';
+import Utils from './components/js/util.js';
 export default {
   data () {
     return {

@@ -4,11 +4,12 @@ import App1 from '../App1'
 import App2 from '../App2'
 import App3 from '../App3'
 import select from '../select'
-import practise1 from '../components/practise1'
-import practise2 from '../components/practise2'
-import menuPage1 from '../components/menuPage1'
-import menuPage2 from '../components/menuPage2'
-import menuPage3 from '../components/menuPage3'
+import practise1 from '../components/practise1/page1'
+import practise2 from '../components/practise1/page2'
+import sigPage from '../components/practise2/page'
+import menuPage1 from '../components/practise3/menuPage1'
+import menuPage2 from '../components/practise3/menuPage2'
+import menuPage3 from '../components/practise3/menuPage3'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
@@ -54,6 +55,13 @@ export default new Router({
       name: 'App2',
       components: {
         app: App2
+      }
+    },
+    {
+      path: '/page',
+      name: 'page',
+      components: {
+        app: sigPage
       }
     },
     {

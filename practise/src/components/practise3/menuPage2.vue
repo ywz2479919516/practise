@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Utils from '../router/util.js';
+import Utils from '../js/util.js';
 export default {
     methods: {
         full () {

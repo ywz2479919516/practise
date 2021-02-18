@@ -1,10 +1,8 @@
 <template>
   <div class="body3">
       <div class="div1"></div>
-      <div class="div2">
-          <div class="div3"></div>
-          <div class="div4"></div>
-      </div>
+      <div class="div2"></div>
+      <div class="div3"></div>
   </div> 
 </template>
 
@@ -39,32 +37,24 @@ export default {
     }
 }
 .div2{
-    background-color: red;
+    background-color: orange;
     position: relative;
-    top: 180px;
-    left: 700px;
-    width: 240px;
-    height: 240px;
-    z-index: -1;
+    top: 60px;
+    left: 560px;
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    z-index: 1;
+    -webkit-clip-path:polygon(0% 0%,33.33% 0%,33.33% 100%,0% 100%);
 }
 .div3{
     background-color: blue;
     position: relative;
-    top: 60px;
-    left: 60px;
+    top: -60px;
+    left: 560px;
     width: 120px;
     height: 120px;
     border-radius: 60px;
     z-index: 0;
-    -webkit-clip-path:polygon(0% 0%,50% 0%,50% 100%,50% 0%);
-}
-.div4{
-    background-color: orange;
-    position: relative;
-    top: -60px;
-    left: -20px;
-    width: 120px;
-    height: 120px;
-    z-index: 1;
 }
 </style>
